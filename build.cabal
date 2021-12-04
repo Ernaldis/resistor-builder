@@ -1,10 +1,10 @@
-Name:               sample
+Name:               resistor
 Version:            1.0.0
 cabal-version:      >= 1.8
 build-type:         Simple
 
 Library
-  Exposed-Modules:  Sample
+  Exposed-Modules:  Resistor
   hs-source-dirs:   src
   Build-Depends:    base >= 4.11 && < 5
                   , containers
@@ -12,10 +12,10 @@ Library
 Test-Suite sample-tests
   type:             exitcode-stdio-1.0
   hs-source-dirs:   test, src
-  Main-is:          SampleTest.hs
-  other-modules:    Sample
+  Main-is:          ResistorTest.hs
+  other-modules:    Resistor
   Build-Depends:    base >= 4.11 && < 5
                   , containers
                   , tasty
                   , tasty-hunit
-                  , sample
+                  , resistor

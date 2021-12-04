@@ -1,5 +1,5 @@
-cabal install tasty
-cabal install tasty-hunit
-cabal configure --enable-tests
+cabal new-install tasty
+cabal new-install tasty-hunit
+cabal new-configure --enable-tests
 cabal build
 cabal test 

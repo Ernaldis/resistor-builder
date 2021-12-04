@@ -1,6 +1,6 @@
 import Test.Tasty (defaultMain, testGroup)
 import Test.Tasty.HUnit (assertEqual, testCase)
-import Sample (addTwo)
+import Resistor (addTwo)
 
 main = defaultMain unitTests
 
