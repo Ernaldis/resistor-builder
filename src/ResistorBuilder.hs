@@ -1,8 +1,9 @@
 module ResistorBuilder ( Resistor(..)
                        , equivalentResistance
+                       , find
                        ) where
 
-data Resistor = Resistor { resistance :: Float, orientation :: Char }
+data Resistor = Resistor { resistance :: Float, orientation :: Char } deriving (Show, Eq)
 
 equivalentResistance :: [Resistor] -> Float
 equivalentResistance [] = 0
@@ -13,3 +14,15 @@ equivalentResistance [a, b]
 equivalentResistance (x:y:xs) = equivalentResistance ([Resistor rollingResistance 'f'] ++ xs)
   where rollingResistance = equivalentResistance [x, y]
 
+findNetwork :: Float -> Float -> [Resistor] -> [Resistor]
+findNetwork target margin network
+  | abs (resistance - target) <= margin = network
+  | remainingSeries > 0 = find remainingSeries margin ++ ([Resistor r1 's'] ++ (tail network))
+  | remainingParallel > 0 = find remainingParallel margin ++ ([Resistor r1 'p'] ++ (tail network))
+  where resistance = equivalentResistance network
+        remainingSeries = target-resistance
+        remainingParallel = (target * resistance)/(resistance - target)
+        r1 = resistance (head network)
+
+find :: Float -> Float -> [Resistor]
+find target margin = findNetwork target margin [Resistor 1 'f']
