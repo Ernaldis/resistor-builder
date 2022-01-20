@@ -14,11 +14,16 @@ equivalentResistance [a, b]
 equivalentResistance (x:y:xs) = equivalentResistance ([Resistor rollingResistance 'f'] ++ xs)
   where rollingResistance = equivalentResistance [x, y]
 
+-- Greedy solution:
+--  start with whichever resistor is closest to target
+--  for each step, pick series or parallel as usual
+--  pick resistance value to minimize difference between equivalent resistance, and target resistance
+
 findNetwork :: Float -> Float -> [Resistor] -> [Resistor]
 findNetwork target margin network
   | abs (resistance - target) <= margin = network
   | remainingSeries > 0 = find remainingSeries margin ++ [Resistor r1 's'] ++ tail network
-  | remainingParallel > 0 = find remainingParallel margin ++ ([Resistor r1 'p'] ++ (tail network))
+  | remainingParallel > 0 = find remainingParallel margin ++ [Resistor r1 'p'] ++ tail network
   where resistance = equivalentResistance network
         remainingSeries = target-resistance
         remainingParallel = (target * resistance)/(resistance - target)
