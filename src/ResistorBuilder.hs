@@ -21,6 +21,7 @@ iterateNetwork :: [Network] -> [Network]
 iterateNetwork [] = [[Resistor r o] | r <- resistors, o <- ['f']]
 iterateNetwork networks = [network ++ [Resistor r o] | network <- networks, r <- resistors, o <- ['s', 'p']]
 
+flatten :: [[a]] -> [a]
 flatten arr = [y | x<- arr, y <- x]
 
 networks = flatten $ iterate (iterateNetwork) []
