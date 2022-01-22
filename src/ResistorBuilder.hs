@@ -4,8 +4,9 @@ module ResistorBuilder ( Resistor(..)
                        ) where
 
 data Resistor = Resistor { resistance :: Float, orientation :: Char } deriving (Show, Eq)
+type Network = [Resistor]
 
-equivalentResistance :: [Resistor] -> Float
+equivalentResistance :: Network -> Float
 equivalentResistance [] = 0
 equivalentResistance [resistor] = resistance resistor
 equivalentResistance [a, b]
@@ -14,18 +15,24 @@ equivalentResistance [a, b]
 equivalentResistance (x:y:xs) = equivalentResistance ([Resistor rollingResistance 'f'] ++ xs)
   where rollingResistance = equivalentResistance [x, y]
 
-findNetwork :: Float -> Float -> [Resistor] -> [Resistor]
-findNetwork target margin network
-  | abs (resistance - target) <= margin = network
-  | remainingSeries > 0 = find remainingSeries margin ++ [Resistor r1 's'] ++ tail network
-  | remainingParallel > 0 = find remainingParallel margin ++ ([Resistor r1 'p'] ++ (tail network))
-  where resistance = equivalentResistance network
-        remainingSeries = target-resistance
-        remainingParallel = (target * resistance)/(resistance - target)
-        r1 = ohms $ head network
+resistors = [1, 1.2, 1.5, 1.8, 2.2, 2.7, 3.3, 3.9, 4.7, 5.6, 6.8, 8.2]
+
+iterateNetwork :: [Network] -> [Network]
+iterateNetwork [] = [[Resistor r o] | r <- resistors, o <- ['f']]
+iterateNetwork networks = [network ++ [Resistor r o] | network <- networks, r <- resistors, o <- ['s', 'p']]
+
+flatten arr = [y | x<- arr, y <- x]
+
+networks = flatten $ iterate (iterateNetwork) []
 
 find :: Float -> Float -> [Resistor]
-find target margin = findNetwork target margin [Resistor 1 'f']
+find target margin = [network | network <- networks, abs (equivalentResistance network - target) <= margin] !! 0
 
-ohms :: Resistor -> Float
-ohms resistor = resistance resistor
+main = do
+  putStrLn "Input a target resistance: "
+  targetInput <- getLine
+  let target = (read targetInput :: Float)
+  putStrLn "Input an acceptible margin: "
+  marginInput <- getLine
+  let margin = (read marginInput :: Float)
+  print (find target margin)
