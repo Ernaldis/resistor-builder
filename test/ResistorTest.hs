@@ -34,7 +34,7 @@ complexResistance =
   testCase "resistance of a network using both series and parallel connections" $ assertEqual [] 0.6 (equivalentResistance [Resistor 1.0 'f', Resistor 1.0 'p', Resistor 1.0 's', Resistor 1.0 'p'])
 
 findUnit = 
-  testCase "find one resistor" $ assertEqual [] [Resistor 1.0 'f'] (find 1.0 0.0)
+  testCase "find one resistor" $ assertEqual [] 1 (equivalentResistance (find 1.0 0.0))
 
 findSimpleSeries = 
-  testCase "find two units in series" $ assertEqual [] [Resistor 1.0 'f', Resistor 1.0 's'] (find 2.0 0.0)
+  testCase "find two units in series" $ assertEqual [] 2 (equivalentResistance (find 2.0 0.0))
