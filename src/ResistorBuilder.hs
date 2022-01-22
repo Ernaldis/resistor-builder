@@ -3,6 +3,8 @@ module ResistorBuilder ( Resistor(..)
                        , find
                        ) where
 
+import System.Environment
+
 data Resistor = Resistor { resistance :: Float, orientation :: Char } deriving (Show, Eq)
 type Network = [Resistor]
 
@@ -30,12 +32,12 @@ find :: Float -> Float -> [Resistor]
 find target margin = [network | network <- networks, abs (equivalentResistance network - target) <= margin] !! 0
 
 main = do
-  putStrLn "Input a target resistance: "
-  targetInput <- getLine
+  args <- getArgs
+  let targetInput = args !! 0
   let target = (read targetInput :: Float)
-  --let margin = 0.05 * target
   let result = find target 0
-  --let resistance = equivalentResistance result
 
+  putStr "Target:\n"
+  print target
   putStr "Result:\n"
   print [(resistance resistor, orientation resistor) | resistor <- result]
