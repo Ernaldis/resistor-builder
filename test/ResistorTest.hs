@@ -7,13 +7,10 @@ main = defaultMain unitTests
 unitTests =
   testGroup
     "Unit tests"
-    [canary, emptyResistance, singleResistance, simleSeriesResistance, simpleParallelResistance, mixedSeriesResistance, mixedParallelResistance, complexResistance, findUnit, findSimpleSeries]
+    [canary, singleResistance, simleSeriesResistance, simpleParallelResistance, mixedSeriesResistance, mixedParallelResistance, complexResistance, findUnit, findSimpleSeries]
 
 canary =
   testCase "canary" $ assertEqual [] True (True)
-
-emptyResistance = 
-  testCase "resistance of an empty network" $ assertEqual [] 0 (equivalentResistance [])
 
 singleResistance = 
   testCase "resistance of a single resistor" $ assertEqual [] 1 (equivalentResistance [Resistor 1 'f'])

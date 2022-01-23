@@ -9,7 +9,6 @@ data Resistor = Resistor { resistance :: Float, orientation :: Char } deriving (
 type Network = [Resistor]
 
 equivalentResistance :: Network -> Float
-equivalentResistance [] = 0
 equivalentResistance [resistor] = resistance resistor
 equivalentResistance (r:rs)
   | orientation (head rs) == 's' = resistance r + remaining
@@ -20,7 +19,7 @@ resistors = [1, 1.2, 1.5, 1.8, 2.2, 2.7, 3.3, 3.9, 4.7, 5.6, 6.8, 8.2, 10, 12, 1
 
 iterateNetwork :: [Network] -> [Network]
 iterateNetwork [] = [[Resistor r o] | r <- resistors, o <- ['f']]
-iterateNetwork networks = [network ++ [Resistor r o] | network <- networks, r <- resistors, o <- ['s', 'p']]
+iterateNetwork networks = [network ++ [Resistor r o] | network <- networks, r <- resistors, o <- ['p', 's']]
 
 flatten :: [[a]] -> [a]
 flatten arr = [y | x<- arr, y <- x]
