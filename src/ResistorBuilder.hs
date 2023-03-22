@@ -3,7 +3,7 @@ module ResistorBuilder ( Resistor(..)
                        , find
                        ) where
 
-import Data.Maybe (fromMaybe)
+import           Data.Maybe (fromMaybe)
 
 data Resistor = Resistor { resistance :: Float, orientation :: Char } deriving (Show, Eq)
 type Network = [Resistor]
@@ -28,14 +28,14 @@ allNetworks :: [Network]
 allNetworks = concat $ iterate (>>= candidates) (candidates [])
 
 isGoodNetwork :: Network -> Float -> Float -> Bool
-isGoodNetwork network target margin = 
+isGoodNetwork network target margin =
   case equivalentResistance network of
-    Just r -> abs(r - target) <= margin
+    Just r  -> abs(r - target) <= margin
     Nothing -> False
 
 find :: Float -> Float -> Maybe Network
 find 0 _ = Nothing
-find target margin = Just . head $ filter (\n -> isGoodNetwork n target margin) allNetworks 
+find target margin = Just . head $ filter (\n -> isGoodNetwork n target margin) allNetworks
 
 main :: IO ()
 main = do
