@@ -3,40 +3,48 @@ module ResistorBuilder ( Resistor(..)
                        , find
                        ) where
 
+import Data.Maybe (fromMaybe)
+
 data Resistor = Resistor { resistance :: Float, orientation :: Char } deriving (Show, Eq)
 type Network = [Resistor]
 
-equivalentResistance :: Network -> Float
-equivalentResistance [] = 0
-equivalentResistance [resistor] = resistance resistor
-equivalentResistance [a, b]
-  | orientation b == 's' = resistance a + resistance b
-  | orientation b == 'p' = (resistance a * resistance b)/(resistance a + resistance b)
-equivalentResistance (x:y:xs) = equivalentResistance ([Resistor rollingResistance 'f'] ++ xs)
-  where rollingResistance = equivalentResistance [x, y]
+resistors :: [Float]
+resistors =[1, 1.2, 1.5, 1.8, 2.2, 2.7, 3.3, 3.9, 4.7, 5.6, 6.8, 8.2] >>= (\r -> map (*r) [10^x | x <- [0..5]])
 
-resistors = [1, 1.2, 1.5, 1.8, 2.2, 2.7, 3.3, 3.9, 4.7, 5.6, 6.8, 8.2, 10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82, 100, 120, 150, 180, 220, 270, 330, 390, 470, 560, 680, 820, 1000, 1200, 1500, 1800, 2200, 2700, 3300, 3900, 4700, 5600, 6800, 8200, 10000, 12000, 15000, 18000, 22000, 27000, 33000, 39000, 47000, 56000, 68000, 82000, 100000, 120000, 150000, 180000, 220000, 270000, 330000, 390000, 470000, 560000, 680000, 82000 , 1000000]
-
-closestCandidate :: Float -> [Network] -> Network
-closestCandidate target networks = foldl (\acc network -> if abs ((equivalentResistance acc) - target) < abs ((equivalentResistance network) - target) then acc else network) (head networks) networks
+equivalentResistance :: Network -> Maybe Float
+equivalentResistance [] = Nothing
+equivalentResistance [resistor] = Just (resistance resistor)
+equivalentResistance (r:rs) =
+  equivalentResistance rs >>= \remaining ->
+  case orientation (head rs) of
+    's' -> Just (resistance r + remaining)
+    'p' -> Just ((resistance r * remaining)/(resistance r + remaining))
 
 candidates :: Network -> [Network]
 candidates [] = [[Resistor r 'f'] | r <- resistors]
 candidates network = [network ++ [Resistor r o] | r <- resistors, o <- ['s', 'p']]
 
-findNetwork :: Float -> Float -> Network -> Network
-findNetwork target margin network
-  | abs ((equivalentResistance network) - target) <= margin = network
-  | otherwise = findNetwork target margin (closestCandidate target (candidates network))
+allNetworks :: [Network]
+allNetworks = concat $ iterate (>>= candidates) (candidates [])
 
-find :: Float -> Float -> [Resistor]
-find target margin = findNetwork target margin (closestCandidate target (candidates []))
+isGoodNetwork :: Network -> Float -> Float -> Bool
+isGoodNetwork network target margin = 
+  case equivalentResistance network of
+    Just r -> abs(r - target) <= margin
+    Nothing -> False
 
+find :: Float -> Float -> Maybe Network
+find 0 _ = Nothing
+find target margin = Just . head $ filter (\n -> isGoodNetwork n target margin) allNetworks 
+
+main :: IO ()
 main = do
   putStrLn "Input a target resistance: "
   targetInput <- getLine
   let target = (read targetInput :: Float)
   let result = find target 0
-
-  putStr "Result:\n"
-  print [(resistance resistor, orientation resistor) | resistor <- result]
+  case result of
+    Just resistors -> do
+      putStr "Result:\n"
+      print resistors
+    Nothing -> putStrLn "No solution found"
