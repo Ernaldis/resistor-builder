@@ -1,9 +1,11 @@
-module ResistorBuilder ( Resistor(..)
+module Main ( Resistor(..)
+                       , main
                        , equivalentResistance
                        , find
                        ) where
 
 import           Data.Maybe (fromMaybe)
+import           System.Environment (getArgs)
 
 data Resistor = Resistor { resistance :: Float, orientation :: Char } deriving (Show, Eq)
 type Network = [Resistor]
@@ -39,12 +41,10 @@ find target margin = Just . head $ filter (\n -> isGoodNetwork n target margin) 
 
 main :: IO ()
 main = do
-  putStrLn "Input a target resistance: "
-  targetInput <- getLine
-  let target = (read targetInput :: Float)
+  args <- getArgs
+  let target = read (head args) :: Float
   let result = find target 0
   case result of
     Just resistors -> do
-      putStr "Result:\n"
       print resistors
     Nothing -> putStrLn "No solution found"

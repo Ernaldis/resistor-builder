@@ -1,10 +1,10 @@
 Name:               resistorBuilder
-Version:            1.0.0
+Version:            1.0.1
 cabal-version:      >= 1.8
 build-type:         Simple
 
 Library
-  Exposed-Modules:  ResistorBuilder
+  Exposed-Modules:  Main
   hs-source-dirs:   src
   Build-Depends:    base >= 4.11 && < 5
                   , containers
