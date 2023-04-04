@@ -1,5 +1,5 @@
 Name:               resistorBuilder
-Version:            1.0.1
+Version:            2.0.0
 cabal-version:      >= 1.8
 build-type:         Simple
 
