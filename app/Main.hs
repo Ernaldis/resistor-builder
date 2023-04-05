@@ -1,7 +1,7 @@
 module Main where
 
-import ResistorBuilder (find)
-import System.Environment (getArgs)
+import           ResistorBuilder    (find)
+import           System.Environment (getArgs)
 
 main :: IO ()
 main = do
@@ -12,4 +12,3 @@ main = do
     Just resistors -> do
       print resistors
     Nothing -> putStrLn "No solution found"
-
