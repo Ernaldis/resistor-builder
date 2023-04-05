@@ -1,7 +1,7 @@
 module Main where
 
-import ResistorBuilder (find)
-import System.Environment (getArgs)
+import           ResistorBuilder    (find)
+import           System.Environment (getArgs)
 
 main :: IO ()
 main = do

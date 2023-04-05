@@ -1,4 +1,4 @@
-import           ResistorBuilder (Resistor(..), equivalentResistance, find)
+import           ResistorBuilder  (Resistor (..), equivalentResistance, find)
 import           Test.Tasty       (defaultMain, testGroup)
 import           Test.Tasty.HUnit (assertEqual, testCase)
 
