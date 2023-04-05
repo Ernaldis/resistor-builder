@@ -12,4 +12,3 @@ main = do
     Just resistors -> do
       print resistors
     Nothing -> putStrLn "No solution found"
-
